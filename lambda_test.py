@@ -86,8 +86,50 @@ dec_att = base64.b64decode(att_data)
 
 with open('temp.xlsx', 'wb') as theFile:
   theFile.write(base64.b64decode(att_data))
-  
-  
+ 
+import io
+import pandas as pd
+
+decrypted=base64.b64decode(att_data)
+
+toread = io.BytesIO()
+toread.write(decrypted)  # pass your `decrypted` string as the argument here
+toread.seek(0)  # reset the pointer
+
+df = pd.read_excel(toread)   
+
+decoded_data = base64.b64decode(filedata)
+
+import openpyxl
+
+xls_filelike = io.BytesIO(decrypted)
+
+workbook = openpyxl.load_workbook(xls_filelike, data_only=True)
 
 
+ws = workbook.active
+dim = ws.dimensions
+
+all_dept = []
+cntr = 0
+for row in ws.values:
+    if cntr > 0:
+        row = list(row)
+        dept = {}
+        max_col = len(row)
+        items = row[3:max_col]
+        dept_items = row[1:3]
+        dept_items.append(items)
+        dept[row[0]] = dept_items
+        
+    cntr += 1
+    all_dept.append(dept)
+  
+
+[{'printer': ['pr@domain.com', 123123, ['paper', 'ink', None, None]]},
+ {'pantry': ['abc@domain.com', 123456, ['tea', 'coffee', 'tissue', None]]},
+ {'stationery': ['sbc@domain.com',
+   98765,
+   ['notebook', 'pencil', 'pen', None]]},
+ {'printer': ['pr@domain.com', 123123, ['paper', 'ink', None, None]]}]
 
